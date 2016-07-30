@@ -6,7 +6,7 @@
  * All DecimaAccounting code is copyright by the original authors and released under the GNU Aferro General Public License version 3 (AGPLv3) or later.
  * See COPYRIGHT and LICENSE.
  */
-namespace Mgallegos\DecimaAccounting\Accounting\Seeders;
+namespace Vendor\DecimaMolule\Module\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder {
 	{
 		Model::unguard();
 
-		$this->call('Mgallegos\DecimaAccounting\Accounting\Seeders\MenuTableSeeder');
+		$this->call('Vendor\DecimaMolule\Module\Seeders\MenuTableSeeder');
 	}
 
 }

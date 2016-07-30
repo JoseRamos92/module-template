@@ -23,7 +23,7 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'journal-management' => array('journalizedType' => array('ACCT_Journal_Voucher'), 'recordsPerPage' => 4),
+	//'journal-management' => array('journalizedType' => array('ACCT_Journal_Voucher'), 'recordsPerPage' => 4),
 
 	/*
  	|--------------------------------------------------------------------------
@@ -31,7 +31,7 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'accounts-management' => array('journalizedType' => array('ACCT_Account'), 'recordsPerPage' => 4),
+	//'accounts-management' => array('journalizedType' => array('ACCT_Account'), 'recordsPerPage' => 4),
 
 	/*
  	|--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'cost-centers-management' => array('journalizedType' => array('ACCT_Cost_Center'), 'recordsPerPage' => 4),
+	//'cost-centers-management' => array('journalizedType' => array('ACCT_Cost_Center'), 'recordsPerPage' => 4),
 
 	/*
  	|--------------------------------------------------------------------------
@@ -47,7 +47,7 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'period-management' => array('journalizedType' => array('ACCT_Period'), 'recordsPerPage' => 4),
+	//'period-management' => array('journalizedType' => array('ACCT_Period'), 'recordsPerPage' => 4),
 
 	/*
  	|--------------------------------------------------------------------------
@@ -55,5 +55,5 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'close-fiscal-year' => array('journalizedType' => array('ACCT_Fiscal_Year'), 'recordsPerPage' => 4),
+	//'close-fiscal-year' => array('journalizedType' => array('ACCT_Fiscal_Year'), 'recordsPerPage' => 4),
 );
