@@ -13,7 +13,4 @@ return array(
 
   'menubtnnew' => 'Hola',
     'message' => 'Hace algo',
-
-
-
 );

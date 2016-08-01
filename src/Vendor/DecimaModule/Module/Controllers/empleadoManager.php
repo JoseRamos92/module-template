@@ -27,7 +27,7 @@ class empleadoManager extends Controller {
 	 * @var Mgallegos\DecimaAccounting\Accounting\Services\AccountManagement\AccountManagementInterface
 	 *
 	 */
-	protected $AccountManagerService;
+	protected $EmpleadoManagerService;
 
 	/**
 	 * View
@@ -53,9 +53,9 @@ class empleadoManager extends Controller {
 	 */
 	protected $Session;
 
-	public function __construct(/*AccountManagementInterface $AccountManagerService,*/ Factory $View, Request $Input, SessionManager $Session)
+	public function __construct(/*AccountManagementInterface $EmpleadoManagerService,*/ Factory $View, Request $Input, SessionManager $Session)
 	{
-		// $this->AccountManagerService = $AccountManagerService;
+		// $this->EmpleadoManagerService = $EmpleadoManagerService;
 
 		$this->View = $View;
 
@@ -70,39 +70,39 @@ class empleadoManager extends Controller {
 						->with('newempleadoAction', $this->Session->get('newempleadoAction', false))
 						->with('editempleadoAction', $this->Session->get('editempleadoAction', false))
 						->with('deleteempleadoAction', $this->Session->get('deleteempleadoAction', false));
-					//	->with('accounts', $this->AccountManagerService->getGroupsAccounts())
+					//	->with('accounts', $this->EmpleadoManagerService->getGroupsAccounts())
 
 	}
 
 	public function postAccountGridData()
 	{
-		return $this->AccountManagerService->getAccountGridData( $this->Input->all() );
+		return $this->EmpleadoManagerService->getAccountGridData( $this->Input->all() );
 	}
 
 	public function postCreate()
 	{
-		return $this->AccountManagerService->create( $this->Input->json()->all() );
+		return $this->EmpleadoManagerService->create( $this->Input->json()->all() );
 	}
 
 	public function postUpdate()
 	{
-		return $this->AccountManagerService->update( $this->Input->json()->all() );
+		return $this->EmpleadoManagerService->update( $this->Input->json()->all() );
 	}
 
 	public function postDelete()
 	{
-		return $this->AccountManagerService->delete( $this->Input->json()->all() );
+		return $this->EmpleadoManagerService->delete( $this->Input->json()->all() );
 	}
 
-	public function postAccountChildren()
-	{
-		return $this->AccountManagerService->getAccountChildren( $this->Input->json()->all() );
-	}
-
-	public function postAccountChildrenIds()
-	{
-		return $this->AccountManagerService->getAccountChildrenIdsJson( $this->Input->json()->all());
-	}
+	// public function postAccountChildren()
+	// {
+	// 	return $this->EmpleadoManagerService->getAccountChildren( $this->Input->json()->all() );
+	// }
+	//
+	// public function postAccountChildrenIds()
+	// {
+	// 	return $this->EmpleadoManagerService->getAccountChildrenIdsJson( $this->Input->json()->all());
+	// }
 
 
 }
