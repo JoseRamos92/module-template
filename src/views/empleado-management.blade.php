@@ -59,12 +59,12 @@
 
 		$('#module-app-journals-section').on('hidden.bs.collapse', function ()
 		{
-			$('#module-app-form-section').collapse('show');
+			$('#module-app-form-section').collapse('show');//aqui
 		});
 
-		$('#module-app-form-section').on('shown.bs.collapse', function ()
+		$('#module-app-form-section').on('shown.bs.collapse', function ()//evento para cuando ya haya cargado
 		{
-			$('#module-app-name').focus();
+			$('#module-app-name').focus();//focus en textboxt
 		});
 
 		$('#module-app-form-section').on('hidden.bs.collapse', function ()
@@ -81,12 +81,22 @@
 				return;
 			}
 
-			$('#module-app-btn-toolbar').disabledButtonGroup();
-			$('#module-app-btn-group-3').enableButtonGroup();
+			$('#module-app-btn-toolbar').disabledButtonGroup();//oculta el grupo de botones nuevo, bug, hola,actualizar, exportar
+			$('#module-app-btn-group-3').enableButtonGroup();//habilita el grupo de bonotes guardar y regresar
 			$('#module-app-form-new-title').removeClass('hidden');
 			$('#module-app-grid-section').collapse('hide');
 			$('#module-app-journals-section').collapse('hide');
 			$('.module-app-btn-tooltip').tooltip('hide');
+		});
+
+		$('#module-app-btn-bug').click(function()
+		{
+			if($(this).hasAttr('disabled'))
+			{
+				return;
+			}
+				alert("Hola");
+				$('.module-app-btn-tooltip').tooltip('hide');
 		});
 
 		$('#module-app-btn-refresh').click(function()
@@ -249,7 +259,7 @@
 			$('#module-app-grid').jqGrid('clearGridData');
 			$('#module-app-form').jqMgVal('clearForm');
 			$('.module-app-btn-tooltip').tooltip('hide');
-			$('#module-app-form-section').collapse('hide');
+			$('#').collapse('hide');
 		});
 	});
 
@@ -268,6 +278,11 @@
 		$('#module-app-btn-new').click();
 	}
 
+	// if(!$('#module-app-bug-action').isEmpty())
+	// {
+	// 	$('#module-app-btn-bug').click();
+	// }
+
 	if(!$('#module-app-edit-action').isEmpty())
 	{
 		showButtonHelper('module-app-btn-close', 'module-app-btn-group-2', $('#module-app-edit-action').attr('data-content'));
@@ -283,8 +298,10 @@
 	<div class="col-lg-12 col-md-12">
 		<div id="module-app-btn-toolbar" class="section-header btn-toolbar" role="toolbar">
 			<div id="module-app-btn-group-1" class="btn-group btn-group-app-toolbar">
-				{!! Form::button('<i class="fa fa-plus"></i> ' . Lang::get('toolbar.new'), array('id' => 'module-app-btn-new', 'class' => 'btn btn-default module-app-btn-tooltip', 'data-container' => 'body', 'data-toggle' => 'tooltip', 'data-original-title' => Lang::get('module::app.new'))) !!}
-				{!! Form::button('<i class="fa fa-bug"></i> ' . Lang::get('decima-module::empleado-management.menuBug'), array('id' => 'module-app-btn-bug', 'class' => 'btn btn-danger module-app-btn-tooltip', 'data-container' => 'body', 'data-toggle' => 'tooltip', 'data-original-title' => Lang::get('module::app.new'))) !!}
+				{!! Form::button('<i class="fa fa-plus"></i> ' . Lang::get('toolbar.new'), array('id' => 'module-app-btn-new', 'class' => 'btn btn-success module-app-btn-tooltip', 'data-container' => 'body', 'data-toggle' => 'tooltip', 'data-original-title' => Lang::get('decima-module::empleado-management.message'))) !!}
+				{!! Form::button('<i class="fa fa-bug"></i> ' . Lang::get('decima-module::empleado-management.menuBug'), array('id' => 'module-app-btn-bug', 'class' => 'btn btn-danger module-app-btn-tooltip', 'data-container' => 'body', 'data-toggle' => 'tooltip', 'data-original-title' => Lang::get('decima-module::empleado-management.message'))) !!}
+				{!! Form::button('<i class="fa fa-bug"></i> ' . Lang::get('decima-module::empleado-management.menubtnnew'), array('id' => 'module-app-btn-bug', 'class' => 'btn btn-default module-app-btn-tooltip', 'data-container' => 'body', 'data-toggle' => 'tooltip', 'data-original-title' => Lang::get('decima-module::empleado-management.message'))) !!}
+
 				{!! Form::button('<i class="fa fa-refresh"></i> ' . Lang::get('toolbar.refresh'), array('id' => 'module-app-btn-refresh', 'class' => 'btn btn-default module-app-btn-tooltip', 'data-container' => 'body', 'data-toggle' => 'tooltip', 'data-original-title' => Lang::get('toolbar.refreshLongText'))) !!}
 				<div class="btn-group">
 					{!! Form::button('<i class="fa fa-share-square-o"></i> ' . Lang::get('toolbar.export') . ' <span class="caret"></span>', array('class' => 'btn btn-default dropdown-toggle', 'data-container' => 'body', 'data-toggle' => 'dropdown')) !!}
@@ -332,7 +349,7 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-6">
 						<div class="form-group mg-hm">
-							{!! Form::label('module-app-name', Lang::get('module::app.name'), array('class' => 'control-label')) !!}
+							{!! Form::label('module-app-name', Lang::get('Nombre'), array('class' => 'control-label')) !!}
 					    {!! Form::text('module-app-name', null , array('id' => 'module-app-name', 'class' => 'form-control', 'data-mg-required' => '')) !!}
 					    {!! Form::hidden('module-app-id', null, array('id' => 'module-app-id')) !!}
 			  		</div>

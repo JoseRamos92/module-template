@@ -11,4 +11,9 @@ return array(
 
   'menuBug' => 'Bug',
 
+  'menubtnnew' => 'Hola',
+    'message' => 'Hace algo',
+
+
+
 );
