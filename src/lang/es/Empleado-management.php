@@ -12,5 +12,9 @@ return array(
   'menuBug' => 'Bug',
 
   'menubtnnew' => 'Hola',
-    'message' => 'Hace algo',
+
+  'message' => 'Hace algo',
+
+'addedJournal' => 'Se agrego el empleado ":empleado"',
+
 );

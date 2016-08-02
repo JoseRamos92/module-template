@@ -52,9 +52,9 @@ class DecimaModuleServiceProvider extends ServiceProvider {
 
 		// $this->registerJournalConfiguration();
 
-		// $this->registerAccountChartTypeInterface();
+		$this->registerEmpleadoInterface();
 
-		// $this->registerJournalManagementInterface();
+		$this->registerEmpleadoManagementInterface();
 	}
 
 	/**
@@ -79,41 +79,35 @@ class DecimaModuleServiceProvider extends ServiceProvider {
 		$this->app->instance('AppJournalConfigurations', array_merge($journalConfiguration, $this->app['config']->get('module-journal')));
 	}
 
-	/**
-	* Register an account chart type interface instance.
-	*
-	* @return void
-	*/
-	protected function registerAccountChartTypeInterface()
+	protected function registerEmpleadoInterface()
 	{
-		$this->app->bind('Mgallegos\DecimaAccounting\System\Repositories\AccountChartType\AccountChartTypeInterface', function()
+		$this->app->bind('Vendor\DecimaModule\Module\Repositories\Empleado\EmpleadoInterface', function($app)
 		{
-			return new \Mgallegos\DecimaAccounting\System\Repositories\AccountChartType\EloquentAccountChartType( new AccountChartType() );
-		});
-	}
+			$AuthenticationManager = $app->make('App\Kwaai\Security\Services\AuthenticationManagement\AuthenticationManagementInterface');
+			return new \Vendor\DecimaModule\Module\Repositories\Empleado\EloquentEmpleado( new \Vendor\DecimaModule\Module\Empleado() , $AuthenticationManager->getCurrentUserOrganizationConnection());
 
+				});
+	}
 	/**
-	* Register a account management interface instance.
+	* Register a ... interface instance.
 	*
 	* @return void
 	*/
-	protected function registerAccountManagementInterface()
+	protected function registerEmpleadoManagementInterface()
 	{
-		$this->app->bind('Mgallegos\DecimaAccounting\Accounting\Services\AccountManagement\AccountManagementInterface', function($app)
+		$this->app->bind('Vendor\DecimaModule\Module\Services\EmpleadoManagement\EmpleadoManagementInterface', function($app)
 		{
-			return new AccountManager(
+			return new \Vendor\DecimaModule\Module\Services\EmpleadoManagement\EmpleadoManager(
 				$app->make('App\Kwaai\Security\Services\AuthenticationManagement\AuthenticationManagementInterface'),
 				$app->make('App\Kwaai\Security\Services\JournalManagement\JournalManagementInterface'),
 				$app->make('App\Kwaai\Security\Repositories\Journal\JournalInterface'),
 				new	\Mgallegos\LaravelJqgrid\Encoders\JqGridJsonEncoder($app->make('excel')),
-				new	\Mgallegos\DecimaAccounting\Accounting\Repositories\Account\EloquentAccountGridRepository(
+				new	\Vendor\DecimaModule\Module\Repositories\Empleado\EloquentEmpleadoGridRepository(
 					$app['db'],
 					$app->make('App\Kwaai\Security\Services\AuthenticationManagement\AuthenticationManagementInterface'),
 					$app['translator']
 				),
-				$app->make('Mgallegos\DecimaAccounting\Accounting\Repositories\Account\AccountInterface'),
-				$app->make('Mgallegos\DecimaAccounting\Accounting\Repositories\AccountType\AccountTypeInterface'),
-				$app->make('Mgallegos\DecimaAccounting\Accounting\Repositories\JournalEntry\JournalEntryInterface'),
+				$app->make('Vendor\DecimaModule\Module\Repositories\Empleado\EmpleadoInterface'),
 				new Carbon(),
 				$app['db'],
 				$app['translator'],

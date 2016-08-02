@@ -13,7 +13,7 @@ use Illuminate\Session\SessionManager;
 
 use Illuminate\Http\Request;
 
-use Mgallegos\DecimaAccounting\Accounting\Services\AccountManagement\AccountManagementInterface;
+use Vendor\DecimaModule\Module\Services\EmpleadoManagement\EmpleadoManagementInterface;
 
 use Illuminate\View\Factory;
 
@@ -53,9 +53,9 @@ class empleadoManager extends Controller {
 	 */
 	protected $Session;
 
-	public function __construct(/*AccountManagementInterface $EmpleadoManagerService,*/ Factory $View, Request $Input, SessionManager $Session)
+	public function __construct(EmpleadoManagementInterface $EmpleadoManagerService, Factory $View, Request $Input, SessionManager $Session)
 	{
-		// $this->EmpleadoManagerService = $EmpleadoManagerService;
+		 $this->EmpleadoManagerService = $EmpleadoManagerService;
 
 		$this->View = $View;
 
@@ -74,9 +74,9 @@ class empleadoManager extends Controller {
 
 	}
 
-	public function postAccountGridData()
+	public function postGridData()
 	{
-		return $this->EmpleadoManagerService->getAccountGridData( $this->Input->all() );
+		return $this->EmpleadoManagerService->getGridData( $this->Input->all() );
 	}
 
 	public function postCreate()

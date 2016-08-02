@@ -7,10 +7,12 @@
  * See COPYRIGHT and LICENSE.
  */
 
-namespace Vendor\DecimaModule\Module\Services\EmpleadoManagement\EmpleadoManagement;
+namespace Vendor\DecimaModule\Module\Services\EmpleadoManagement;
 
-interface EmpleadoManager {
+interface EmpleadoManagementInterface {
 
 
 
 }
+
+ ?>

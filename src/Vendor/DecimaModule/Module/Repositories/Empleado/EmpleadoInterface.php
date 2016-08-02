@@ -7,7 +7,7 @@
  * See COPYRIGHT and LICENSE.
  */
 
-namespace Vendor\DecimaModule\Module\Repositories\EmpleadoManagerInterface;
+namespace Vendor\DecimaModule\Module\Repositories\Empleado;
 
 interface EmpleadoInterface {
 
@@ -34,7 +34,7 @@ interface EmpleadoInterface {
    *
    * @return Illuminate\Database\Eloquent\Collection
    */
-  public function byOrganization($id)
+  public function byOrganization($id);
 
 	/**
 	* Create a new account type
@@ -60,7 +60,7 @@ interface EmpleadoInterface {
 	*
 	* @return boolean
 	*/
-	public function update(array $data, $Account = null);
+	public function update(array $data, $Empleado = null);
 
 
 }

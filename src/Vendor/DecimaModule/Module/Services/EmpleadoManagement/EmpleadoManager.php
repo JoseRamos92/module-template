@@ -7,7 +7,7 @@
  * See COPYRIGHT and LICENSE.
  */
 
-namespace Vendor\DecimaModule\Module\Services\EmpleadoManagement\EmpleadoManagement;
+namespace Vendor\DecimaModule\Module\Services\EmpleadoManagement;
 
 use App\Kwaai\Security\Services\AuthenticationManagement\AuthenticationManagementInterface;
 
@@ -17,10 +17,9 @@ use App\Kwaai\Security\Repositories\Journal\JournalInterface;
 
 use Mgallegos\LaravelJqgrid\Encoders\RequestedDataInterface;
 
-use App\Kwaai\Template\Repositories\ModuleTableName\EloquentModuleTableNameGridRepository;
+use Vendor\DecimaModule\Module\Repositories\Empleado\EloquentEmpleadoGridRepository;
 
-use App\Kwaai\Template\Repositories\ModuleTableName\ModuleTableNameInterface;
-
+use Vendor\DecimaModule\Module\Repositories\Empleado\EmpleadoInterface;
 use Carbon\Carbon;
 
 use Illuminate\Config\Repository;
@@ -30,7 +29,7 @@ use Illuminate\Translation\Translator;
 use Illuminate\Database\DatabaseManager;
 
 
-class EmpleadoManager implements EmpleadoManagerInterface {
+class EmpleadoManager implements EmpleadoManagementInterface {
 
   /**
    * Authentication Management Interface
@@ -67,18 +66,18 @@ class EmpleadoManager implements EmpleadoManagerInterface {
   /**
 	 * Eloquent Grid Repository
 	 *
-	 * @var App\Kwaai\Template\Repositories\ModuleTableName\EloquentModuleTableNameGridRepository
+	 * @var App\Kwaai\Template\Repositories\Empleado\EloquentEmpleadoGridRepository
 	 *
 	 */
-	protected $EloquentModuleTableNameGridRepository;
+	protected $EloquentEmpleadoGridRepository;
 
   /**
 	 *  Module Table Name Interface
 	 *
-	 * @var App\Kwaai\Template\Repositories\ModuleTableName\ModuleTableNameInterface
+	 * @var App\Kwaai\Template\Repositories\Empleado\EmpleadoInterface
 	 *
 	 */
-	protected $ModuleTableName;
+	protected $Empleado;
 
   /**
    * Carbon instance
@@ -112,7 +111,7 @@ class EmpleadoManager implements EmpleadoManagerInterface {
    */
   protected $Config;
 
-	public function __construct(AuthenticationManagementInterface $AuthenticationManager, JournalManagementInterface $JournalManager, JournalInterface $Journal, RequestedDataInterface $GridEncoder, EloquentModuleTableNameGridRepository $EloquentModuleTableNameGridRepository, ModuleTableNameInterface $ModuleTableName, Carbon $Carbon, DatabaseManager $DB, Translator $Lang, Repository $Config)
+	public function __construct(AuthenticationManagementInterface $AuthenticationManager, JournalManagementInterface $JournalManager, JournalInterface $Journal, RequestedDataInterface $GridEncoder, EloquentEmpleadoGridRepository $EloquentEmpleadoGridRepository, EmpleadoInterface $Empleado, Carbon $Carbon, DatabaseManager $DB, Translator $Lang, Repository $Config)
 	{
     $this->AuthenticationManager = $AuthenticationManager;
 
@@ -122,9 +121,9 @@ class EmpleadoManager implements EmpleadoManagerInterface {
 
     $this->GridEncoder = $GridEncoder;
 
-    $this->EloquentModuleTableNameGridRepository = $EloquentModuleTableNameGridRepository;
+    $this->EloquentEmpleadoGridRepository = $EloquentEmpleadoGridRepository;
 
-    $this->ModuleTableName = $ModuleTableName;
+    $this->Empleado = $Empleado;
 
     $this->Carbon = $Carbon;
 
@@ -145,7 +144,7 @@ class EmpleadoManager implements EmpleadoManagerInterface {
    */
   public function getGridData(array $post)
   {
-    $this->GridEncoder->encodeRequestedData($this->EloquentModuleTableNameGridRepository, $post);
+    $this->GridEncoder->encodeRequestedData($this->EloquentEmpleadoGridRepository, $post);
   }
 
   /**
@@ -161,24 +160,27 @@ class EmpleadoManager implements EmpleadoManagerInterface {
 	 */
 	public function create(array $input)
 	{
-    unset($input['_token']);
+    unset($input['_token'],$input['puesto']);
 
-    $loggedUserId = $this->AuthenticationManager->getLoggedUserId();
-    $organizationId = $this->AuthenticationManager->getCurrentUserOrganizationId();
+    $loggedUserId = $this->AuthenticationManager->getLoggedUserId();//linea del id del usuario conectado
+    $organizationId = $this->AuthenticationManager->getCurrentUserOrganizationId();//
 
     $input = eloquent_array_filter_for_insert($input);
-		$input = array_add($input, 'organization_id', $organizationId);
+		//$input = array_add($input, 'organization_id', $organizationId);
     // $input['date'] = $this->Carbon->createFromFormat($this->Lang->get('form.phpShortDateFormat'), $input['date'])->format('Y-m-d');
 
-    $this->DB->transaction(function() use ($input, $loggedUserId, $organizationId)
-		{
-      $ModuleTableName = $this->ModuleTableName->create($input);
 
-      $Journal = $this->Journal->create(array('journalized_id' => $ModuleTableName->id, 'journalized_type' => $this->ModuleTableName->getTable(), 'user_id' => $loggedUserId, 'organization_id' => $organizationId));
-      $this->Journal->attachDetail($Journal->id, array('note' => $this->Lang->get('module::app.addedJournal', array('ModuleTableName' => $ModuleTableName->key . ' ' , $ModuleTableName->key)), $Journal));
+    //transaccion, variables q estan dentro de otroa funcion
+    $this->DB->transaction(function() use ($input, $loggedUserId, $organizationId)
+		{//Empleado es el repositorio
+      $Empleado = $this->Empleado->create($input);
+      //tabla de auditoria
+      $Journal = $this->Journal->create(array('journalized_id' => $Empleado->id, 'journalized_type' => $this->Empleado->getTable(), 'user_id' => $loggedUserId, 'organization_id' => $organizationId));
+      //mensaje de auditoria se ha agregado el empleado
+      $this->Journal->attachDetail($Journal->id, array('note' => $this->Lang->get('decima-module::Empleado-management.addedJournal', array('Empleado' => $Empleado->nombre . ' ' . $Empleado->apellido)), $Journal));
 
     });
-
+    //json_encode transforma en json el array
     return json_encode(array('success' => $this->Lang->get('form.defaultSuccessSaveMessage')));
   }
 
@@ -194,33 +196,33 @@ class EmpleadoManager implements EmpleadoManagerInterface {
    */
   public function update(array $input)
   {
-    unset($input['_token']);
+    unset($input['_token'],$input['puesto']);
     $input = eloquent_array_filter_for_update($input);
     // $input['date'] = $this->Carbon->createFromFormat($this->Lang->get('form.phpShortDateFormat'), $input['date'])->format('Y-m-d');
 
     $this->DB->transaction(function() use (&$input)
     {
-      $ModuleTableName = $this->ModuleTableName->byId($input['id']);
-      $unchangedModuleTableNameValues = $ModuleTableName->toArray();
+      $Empleado = $this->Empleado->byId($input['id']);
+      $unchangedEmpleadoValues = $Empleado->toArray();
 
-      $this->ModuleTableName->update($input, $ModuleTableName);
+      $this->Empleado->update($input, $Empleado);
 
       $diff = 0;
 
       foreach ($input as $key => $value)
       {
-        if($unchangedModuleTableNameValues[$key] != $value)
+        if($unchangedEmpleadoValues[$key] != $value)
         {
           $diff++;
 
           if($diff == 1)
           {
-            $Journal = $this->Journal->create(array('journalized_id' => $ModuleTableName->id, 'journalized_type' => $this->ModuleTableName->getTable(), 'user_id' => $this->AuthenticationManager->getLoggedUserId(), 'organization_id' => $this->AuthenticationManager->getCurrentUserOrganizationId()));
+            $Journal = $this->Journal->create(array('journalized_id' => $Empleado->id, 'journalized_type' => $this->Empleado->getTable(), 'user_id' => $this->AuthenticationManager->getLoggedUserId(), 'organization_id' => $this->AuthenticationManager->getCurrentUserOrganizationId()));
           }
 
           if($key == 'field0')
           {
-            $this->Journal->attachDetail($Journal->id, array('field' => $this->Lang->get('module::app.field0'), 'field_lang_key' => 'module::app.field0', 'old_value' => $this->Lang->get('module::app.' . $unchangedModuleTableNameValues[$key]), 'new_value' => $this->Lang->get('module::app.' . $value)), $Journal);
+            $this->Journal->attachDetail($Journal->id, array('field' => $this->Lang->get('module::app.field0'), 'field_lang_key' => 'module::app.field0', 'old_value' => $this->Lang->get('module::app.' . $unchangedEmpleadoValues[$key]), 'new_value' => $this->Lang->get('module::app.' . $value)), $Journal);
           }
           else if ($key == 'field1')
           {
@@ -228,7 +230,7 @@ class EmpleadoManager implements EmpleadoManagerInterface {
           }
           else
           {
-            $this->Journal->attachDetail($Journal->id, array('field' => $this->Lang->get('module::app.' . camel_case($key)), 'field_lang_key' => 'module::app.' . camel_case($key), 'old_value' => $unchangedModuleTableNameValues[$key], 'new_value' => $value), $Journal);
+            $this->Journal->attachDetail($Journal->id, array('field' => $this->Lang->get('module::app.' . camel_case($key)), 'field_lang_key' => 'module::app.' . camel_case($key), 'old_value' => $unchangedEmpleadoValues[$key], 'new_value' => $value), $Journal);
           }
         }
       }
@@ -254,10 +256,10 @@ class EmpleadoManager implements EmpleadoManagerInterface {
       $loggedUserId = $this->AuthenticationManager->getLoggedUserId();
       $organizationId = $this->AuthenticationManager->getCurrentUserOrganization('id');
 
-      $ModuleTableName = $this->ModuleTableName->byId($input['id']);
-      $Journal = $this->Journal->create(array('journalized_id' => $input['id'], 'journalized_type' => $this->ModuleTableName->getTable(), 'user_id' => $loggedUserId, 'organization_id' => $organizationId));
-      $this->Journal->attachDetail($Journal->id, array('note' => $this->Lang->get('module::app.deletedJournal', array('number' => $ModuleTableName->number)), $Journal));
-      // $this->ModuleTableName->delete(array($input['id']));
+      $Empleado = $this->Empleado->byId($input['id']);
+      $Journal = $this->Journal->create(array('journalized_id' => $input['id'], 'journalized_type' => $this->Empleado->getTable(), 'user_id' => $loggedUserId, 'organization_id' => $organizationId));
+      $this->Journal->attachDetail($Journal->id, array('note' => $this->Lang->get('module::app.deletedJournal', array('number' => $Empleado->number)), $Journal));
+      // $this->Empleado->delete(array($input['id']));
     });
 
     return json_encode(array('success' => $this->Lang->get('module::app.successDeletedMessage')));
@@ -286,10 +288,10 @@ class EmpleadoManager implements EmpleadoManagerInterface {
        {
          $count++;
 
-         $Journal = $this->Journal->create(array('journalized_id' => $id, 'journalized_type' => $this->ModuleTableName->getTable(), 'user_id' => $loggedUserId, 'organization_id' => $organizationId));
-         $this->Journal->attachDetail($Journal->id, array('note' => $this->Lang->get('module::app.deletedJournal', array('email' => $ModuleTableName->email, 'organization' => $organizationName))), $Journal);
+         $Journal = $this->Journal->create(array('journalized_id' => $id, 'journalized_type' => $this->Empleado->getTable(), 'user_id' => $loggedUserId, 'organization_id' => $organizationId));
+         $this->Journal->attachDetail($Journal->id, array('note' => $this->Lang->get('module::app.deletedJournal', array('email' => $Empleado->email, 'organization' => $organizationName))), $Journal);
 
-         $this->ModuleTableName->delete(array($id));
+         $this->Empleado->delete(array($id));
        }
 
        if($count == 1)

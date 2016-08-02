@@ -24,7 +24,7 @@
 		{
 			$('#rh-em-btn-group-2').enableButtonGroup();
 			cleanJournals('rh-em-');
-			getAppJournals('rh-em-','firstPage', $('#rh-em-grid').getSelectedRowId());
+		//	getAppJournals('rh-em-','firstPage', $('#rh-em-grid').getSelectedRowId());
 		}
 		else if(selRowIds.length > 1)
 		{
@@ -326,12 +326,18 @@
 				->enablefilterToolbar(false, false)
 				->hideXlsExporter()
   			->hideCsvExporter()
-	    	->setGridOption('url',URL::to('module/category/app/grid-data'))
+	    	->setGridOption('url',URL::to('recurso-humano/mantenimiento/empleados/grid-data'))
 	    	->setGridOption('caption', Lang::get('module::app.gridTitle', array('user' => AuthManager::getLoggedUserFirstname())))
 	    	->setGridOption('postData',array('_token' => Session::token()))
 				->setGridEvent('onSelectRow', 'rhEmOnSelectRowEvent')
-	    	->addColumn(array('index' => 'id', 'name' => 'module_app_id', 'hidden' => true))
-	    	->addColumn(array('label' => Lang::get('module::app.name'), 'index' => 'name' ,'name' => 'module_app_name'))
+	    	->addColumn(array('index' => 't1.id', 'name' => 'rh_em_id', 'hidden' => true))
+	    	->addColumn(array('label' => 'nombre', 'index' => 't1.name' ,'name' => 'rh_em_nombre'))
+				->addColumn(array('label' => 'apellido', 'index' => 't1.apellido' ,'name' => 'rh_em_apellido'))
+				->addColumn(array('label' => 'edad', 'index' => 't1.edad' ,'name' => 'rh_em_edad'))
+				->addColumn(array('label' => 'salario', 'index' => 't1.salario' ,'name' => 'rh_em_salario'))
+				->addColumn(array('label' => 'descripcion', 'index' => 't1.descripcion' ,'name' => 'rh_em_descripcion'))
+				->addColumn(array('index' => 't2.id', 'name' => 'rh_em_puesto_id', 'hidden' => true))
+				->addColumn(array('label' => 'puesto', 'index' => 't2.nombre' ,'name' => 'rh_em_puesto'))
 	    	->renderGrid();
 			!!}
 		</div>
@@ -364,7 +370,7 @@
 						</div>
 						<div class="form-group mg-hm">
 							{!! Form::label('rh-em-descripcion', Lang::get('decima-module::empleado-management.descripcion'), array('class' => 'control-label')) !!}
-							{!! Form::textareacustom('acct-jm-remark', 2, 500, array('class' => 'form-control', 'data-mg-required' => '')) !!}
+							{!! Form::textareacustom('rh-em-descripcion', 2, 500, array('class' => 'form-control', 'data-mg-required' => '')) !!}
 						</div>
 					</div>
 					<div class="col-lg-6 col-md-6">
@@ -378,7 +384,7 @@
 						</div>
 						<div class="form-group mg-hm">
 							{!! Form::label('rh-em-puesto', Lang::get('decima-module::empleado-management.puesto'), array('class' => 'control-label')) !!}
-							{!! Form::autocomplete('rh-em-puesto', array(), array('class' => 'form-control', 'data-mg-required' => ''), 'rh-em-puesto', 'rh-em-puesto-id', null, 'fa-files-o') !!}
+							{!! Form::autocomplete('rh-em-puesto', array(array('label'=>'puesto 1', 'value'=>1)), array('class' => 'form-control', 'data-mg-required' => ''), 'rh-em-puesto-id', 'rh-em-puesto-id', null, 'fa-files-o') !!}
 							{!! Form::hidden('rh-em-puesto-id', null, array('id'  =>  'rh-em-puesto-id')) !!}
 						</div>
 					</div>

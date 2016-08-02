@@ -7,13 +7,13 @@
  * See COPYRIGHT and LICENSE.
  */
 
-namespace Vendor\DecimaModule\Module\Repositories\EmpleadoManagerService;
+namespace Vendor\DecimaModule\Module\Repositories\Empleado;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Vendor\DecimaModule\Module\EmpleadoManagerService;
+use Vendor\DecimaModule\Module\Empleado;
 
-class EloquentEmpleadoManagerService implements EmpleadoManagerServiceInterface {
+class EloquentEmpleado implements EmpleadoInterface {
 
   /**
    * Empleado
@@ -84,7 +84,7 @@ class EloquentEmpleadoManagerService implements EmpleadoManagerServiceInterface 
    * @return boolean
    */
   public function create(array $data)
-  {
+  {//Empleado modelo de empleado
     $Empleado = new Empleado();
     $Empleado->setConnection($this->databaseConnectionName);
     $Empleado->fill($data)->save();
